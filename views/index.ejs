@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Our Memory Wall ❤️</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				max-width: 800px;
+				margin: 0 auto;
+				padding: 20px;
+			}
+			.post {
+				border: 1px solid #ddd;
+				padding: 15px;
+				margin-bottom: 15px;
+				border-radius: 8px;
+			}
+			img {
+				max-width: 300px;
+				height: auto;
+				border-radius: 4px;
+			}
+			textarea {
+				width: 100%;
+				padding: 10px;
+				margin-bottom: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Our Memory Wall ❤️</h1>
+		<form action="/post" method="POST" enctype="multipart/form-data">
+			<textarea
+				name="text"
+				placeholder="Write something sweet..."
+				required
+			></textarea
+			><br />
+			<input type="file" name="image" accept="image/*" /><br />
+			<button type="submit">Post</button>
+		</form>
+		<div id="posts">
+			<% posts.forEach(post => { %>
+			<div class="post">
+				<p><%= post.text %></p>
+				<% if (post.image) { %>
+				<img src="<%= post.image %>" alt="Memory Image" />
+				<% } %>
+				<small>Posted on: <%= post.createdAt.toLocaleString() %></small>
+			</div>
+			<% }); %>
+		</div>
+	</body>
+</html>

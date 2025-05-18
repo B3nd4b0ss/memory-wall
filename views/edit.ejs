@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Edit Post</title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="/css/main.css" />
+	</head>
+	<body>
+		<div class="container">
+			<h1>Edit Your Memory</h1>
+			<form
+				action="/edit/<%= post._id %>"
+				method="POST"
+				enctype="multipart/form-data"
+				class="edit-form"
+			>
+				<textarea name="text" required><%= post.text %></textarea>
+				<div class="form-group">
+					<label for="media">Update Media (optional):</label>
+					<input
+						type="file"
+						id="media"
+						name="media"
+						accept="image/*,video/*"
+						multiple
+					/>
+				</div>
+				<div class="form-actions">
+					<button type="submit" class="btn btn-primary">
+						Save Changes
+					</button>
+					<a href="/" class="btn btn-secondary">Cancel</a>
+				</div>
+			</form>
+		</div>
+	</body>
+</html>

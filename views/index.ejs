@@ -1,54 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Our Memory Wall ❤️</title>
-		<style>
-			body {
-				font-family: Arial, sans-serif;
-				max-width: 800px;
-				margin: 0 auto;
-				padding: 20px;
-			}
-			.post {
-				border: 1px solid #ddd;
-				padding: 15px;
-				margin-bottom: 15px;
-				border-radius: 8px;
-			}
-			img {
-				max-width: 300px;
-				height: auto;
-				border-radius: 4px;
-			}
-			textarea {
-				width: 100%;
-				padding: 10px;
-				margin-bottom: 10px;
-			}
-		</style>
+		<link rel="stylesheet" href="/css/main.css" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
 	</head>
 	<body>
-		<h1>Our Memory Wall ❤️</h1>
-		<form action="/post" method="POST" enctype="multipart/form-data">
-			<textarea
-				name="text"
-				placeholder="Write something sweet..."
-				required
-			></textarea
-			><br />
-			<input type="file" name="image" accept="image/*" /><br />
-			<button type="submit">Post</button>
-		</form>
-		<div id="posts">
-			<% posts.forEach(post => { %>
-			<div class="post">
-				<p><%= post.text %></p>
-				<% if (post.image) { %>
-				<img src="<%= post.image %>" alt="Memory Image" />
+		<header class="header">
+			<div class="user-info">
+				<% if (user) { %>
+				<p>
+					Welcome, <strong><%= user.username %></strong>!
+					<a href="/logout" class="logout-link">Logout</a>
+				</p>
+				<% } else { %>
+				<p>
+					<a href="/login" class="auth-link">Login</a> |
+					<a href="/register" class="auth-link">Register</a>
+				</p>
 				<% } %>
-				<small>Posted on: <%= post.createdAt.toLocaleString() %></small>
 			</div>
-			<% }); %>
-		</div>
+			<h1>Our Memory Wall ❤️</h1>
+		</header>
+
+		<main class="main-content">
+			<% if (user) { %>
+			<section class="create-post">
+				<form
+					action="/post"
+					method="POST"
+					enctype="multipart/form-data"
+					class="post-form"
+				>
+					<div class="form-group">
+						<textarea
+							name="text"
+							placeholder="Write something sweet..."
+							required
+						></textarea>
+					</div>
+					<div class="form-group">
+						<label for="media">Add Media (optional):</label>
+						<input
+							type="file"
+							id="media"
+							name="media"
+							accept="image/*,video/*"
+							multiple
+						/>
+					</div>
+					<button type="submit" class="btn btn-primary">Post</button>
+				</form>
+			</section>
+			<% } %>
+
+			<section class="posts">
+				<% posts.forEach(post => { %>
+				<article class="post">
+					<div class="post-content">
+						<p class="post-text"><%= post.text %></p>
+
+						<% if (post.media && post.media.length > 0) { %>
+						<div class="media-container">
+							<% post.media.forEach(media => { %> <% if
+							(/\.(jpg|jpeg|png|gif)$/i.test(media)) { %>
+							<img
+								src="<%= media %>"
+								alt="Memory Image"
+								class="post-media"
+								loading="lazy"
+							/>
+							<% } else if
+							(/\.(mp4|webm|ogg|mov|avi)$/i.test(media)) { %>
+							<video
+								controls
+								class="post-media"
+								preload="metadata"
+							>
+								<source src="<%= media %>" type="video/mp4" />
+								Your browser does not support the video tag.
+							</video>
+							<% } %> <% }); %>
+						</div>
+						<% } %>
+					</div>
+
+					<footer class="post-footer">
+						<small class="post-meta">
+							Posted on: <%= new
+							Date(post.createdAt).toLocaleString() %> by: <%=
+							post.user ? post.user.username : 'Unknown' %>
+						</small>
+
+						<% if (user && post.user && (user._id.toString() ===
+						post.user._id.toString() || user.username === 'admin'))
+						{ %>
+						<div class="post-actions">
+							<form class="delete-form">
+								<a
+									href="/edit/<%= post._id %>"
+									class="btn btn-edit"
+									>Edit</a
+								>
+							</form>
+							<form
+								action="/delete/<%= post._id %>"
+								method="POST"
+								class="delete-form"
+							>
+								<button type="submit" class="btn btn-delete">
+									Delete
+								</button>
+							</form>
+						</div>
+						<% } %>
+					</footer>
+				</article>
+				<% }); %>
+			</section>
+		</main>
 	</body>
 </html>
